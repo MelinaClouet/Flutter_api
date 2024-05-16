@@ -16,21 +16,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
       onTap: onTap,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home, color: currentIndex == 0 ? Color(0xFF9F5540): Colors.black  ),
           label: 'Accueil',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Recherche',
+          icon: Icon(Icons.sunny, color: currentIndex == 1 ? Color(0xFF9F5540): Colors.black),
+          label: 'Univers',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notifications',
+          icon: Icon(Icons.message, color: currentIndex == 2 ? Color(0xFF9F5540) :Colors.black),
+          label: 'Messages',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profil',
-        ),
+
       ],
     );
   }

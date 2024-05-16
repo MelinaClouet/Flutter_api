@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 
 class ScreenHome extends StatefulWidget {
   const ScreenHome({Key? key});
@@ -117,7 +118,26 @@ class _ScreenHomeState extends State<ScreenHome> {
           ),
         ],
       ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0, // Index de l'élément sélectionné
+        onTap: (index) {
 
+          // Gestion de la navigation
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              break;
+            case 1:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              break;
+            case 2:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              break;
+
+          }
+
+        },
+      ),
     );
   }
 }
