@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_api/class/univers.dart';
+import 'package:flutter_api/screen.home.dart';
+import 'package:flutter_api/screen.universes.description.dart';
+import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'class/pictures.dart';
@@ -40,6 +43,9 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
     });
   }
 
+  TextEditingController nameController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +64,42 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
               ),
             ),
             IconButton(
-                onPressed: () => Navigator.pushNamed(context, '/addUnivers'),
+                onPressed: () =>showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    // Build the content of your modal here
+                    return AlertDialog(
+                      backgroundColor: Colors.white ,
+                      title: Text('Ajouter un univers', style: TextStyle(color: Color(0xFF80586B), fontWeight: FontWeight.bold,)),
+                      content:TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Nom de l\'univers',
+                        ),
+                      ),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children:[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context), // Close the modal
+                              child: Text('Close', style: TextStyle(color: Color(0xFF80586B))),
+                            ),
+                            TextButton(
+                              onPressed: () =>
+                                  univers.addUnivers(_token, nameController.text),
+                              // Close the modal
+                              child: Text('Ajouter', style: TextStyle(color: Color(0xFF9F5540))),
+                            ),
+
+                          ]
+                        )
+
+                      ],
+                    );
+                  },
+                ),
                 icon: Icon(
                   Icons.add,
                   color: Color(0xFF9F5540),
@@ -99,15 +140,25 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: FadeInImage(
-                            placeholder: NetworkImage(
-                              "https://via.placeholder.com/150",
-                            ),
-                            image: NetworkImage(
-                              picture.fetchPictures(_token, data[index]['image'] as String) as String,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ScreenUniversesDescription(universeId: data[index]["id"].toString(),)),
+                              );
+                              print(data[index]["id"]); // For testing purposes
+                            },
+                            child: FadeInImage(
+                              placeholder: NetworkImage(
+                                "https://via.placeholder.com/150",
+                              ),
+                              image: NetworkImage(
+                                picture.fetchPictures(_token, data[index]['image'] as String) as String,
+                              ),
                             ),
                           ),
                         ),
+
                       ),
                       SizedBox(height: 10),
                       Text(
@@ -124,7 +175,27 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
             );
           }
         },
-      )
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 1, // Index de l'élément sélectionné
+        onTap: (index) {
+
+        // Gestion de la navigation
+          switch (index) {
+          case 0:
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+          break;
+          case 1:
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
+          break;
+          case 2:
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+          break;
+
+          }
+
+        },
+      ),
 
     );
   }

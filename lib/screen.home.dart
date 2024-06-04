@@ -175,7 +175,7 @@ final conversations=Conversations();
                         final data = snapshot.data as List<dynamic>;
                         return Row(
                           children: List.generate(
-                            data.length,
+                            10,
                                 (index) => Container(
                               margin: EdgeInsets.only(right: 20),
                               child: Column(
