@@ -149,25 +149,21 @@ class _ScreenRegisterState extends State<ScreenRegister> {
 
                       // Effectuer la requête HTTP
                       var url = Uri.parse('https://mds.sprw.dev/users');
-                      http.post(url, body: jsonEncode({
+                      var body= {
                         'username': pseudoController.text,
                         'password': passwordController.text,
                         'email': mailController.text,
                         'firstname': prenomController.text,
                         'lastname': nomController.text,
-
-                      })).then((response) {
+                      };
+                      debugPrint(body.toString());
+                      http.post(url, body: jsonEncode(body)).then((response) {
                         debugPrint(response.statusCode.toString());
                         if(response.statusCode == 201){
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ScreenHome(),
-                              settings: RouteSettings(
-                                arguments: response.body,
-                              ),
-                              // Pass the arguments as part of the RouteSettings.
-
+                              builder: (context) => const ScreenLogin(),
                             ),
                           );
                         }
@@ -183,7 +179,26 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                           );
                         }
                         else{
-                         debugPrint('else');
+                         debugPrint(response.body);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text('Erreur lors de la connexion',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        }
+                        if(response.statusCode==409){
+                          debugPrint("Response body: ${response.body}");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text('Cet utilisateur ou adresse mail existe déjà',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
                         }
                       });
                     } else {

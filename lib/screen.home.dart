@@ -1,14 +1,57 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'class/pictures.dart';
+import 'class/univers.dart';
+import 'class/conversations.dart';
+
+
 
 class ScreenHome extends StatefulWidget {
-  const ScreenHome({Key? key});
+
+
+  const ScreenHome({Key? key}) : super(key: key);
 
   @override
   State<ScreenHome> createState() => _ScreenHomeState();
 }
 
 class _ScreenHomeState extends State<ScreenHome> {
+
+  String? _token; // Declare a variable to hold the token
+  String? _id;
+
+  @override
+  void initState() {
+    super.initState();
+    _getToken();
+    _getId();
+
+  }
+
+  Future<void> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('token');
+    });
+  }
+
+  Future<void> _getId() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      _id = prefs.getString('id').toString();
+    });
+  }
+
+
+  final univers = Univers();
+final conversations=Conversations();
+  final picture=Pictures();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,27 +94,42 @@ class _ScreenHomeState extends State<ScreenHome> {
                 SizedBox(height: 20),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                      5,
-                          (index) => Container(
-                        margin: EdgeInsets.only(right: 20),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.grey[300],
+                  child: FutureBuilder(
+                    future: univers.fetchUnivers(_token),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
+                      return Text('No data');
+                      } else {
+                      final data = snapshot.data as List<dynamic>;
+                     return Row(
+                        children: List.generate(
+                          data.length,
+                              (index) =>
+                              Container(
+                                margin: EdgeInsets.only(right: 20),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: 100,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(data[index]['name'] as String),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Text("Nom de la conversation"),
-                          ],
                         ),
-                      ),
-                    ),
+                      );
+                    }
+                    },
                   ),
                 ),
               ],
@@ -90,27 +148,52 @@ class _ScreenHomeState extends State<ScreenHome> {
                 SizedBox(height: 20),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                      5,
-                          (index) => Container(
-                        margin: EdgeInsets.only(right: 20),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 160,
-                              height: 160,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.grey[300],
+                  child: FutureBuilder(
+                    future: univers.fetchUnivers(_token),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
+                        return Text('No data');
+                      } else {
+                        final data = snapshot.data as List<dynamic>;
+                        return Row(
+                          children: List.generate(
+                            data.length,
+                                (index) => Container(
+                              margin: EdgeInsets.only(right: 20),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 160,
+                                    height: 160,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                      child: ClipRRect( // Clip the child to respect the border radius
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: FadeInImage(
+                                          placeholder: NetworkImage(
+                                            "https://via.placeholder.com/150",
+                                          ),
+                                          image: NetworkImage(
+                                            picture.fetchPictures(_token, data[index]['image'] as String) as String,
+                                          ),
+                                        ),
+                                      ),
+
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(data[index]['name'] as String),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 10),
-                            Text("Nom de la conversation"),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],
@@ -140,4 +223,9 @@ class _ScreenHomeState extends State<ScreenHome> {
       ),
     );
   }
+
+
+
+
+  //img_data/.jpg
 }
