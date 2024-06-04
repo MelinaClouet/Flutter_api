@@ -222,13 +222,13 @@ final conversations=Conversations();
           // Gestion de la navigation
           switch (index) {
             case 0:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
               break;
             case 1:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
               break;
             case 2:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
               break;
 
           }
