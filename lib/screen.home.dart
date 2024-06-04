@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_api/screen.universes.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -95,42 +96,55 @@ final conversations=Conversations();
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: FutureBuilder(
-                    future: univers.fetchUnivers(_token),
-                    builder: (context, snapshot) {
+                    future: conversations.fetchConversations(_token),
+                    builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                        // Afficher un indicateur de chargement pendant le chargement des données
+                        return CircularProgressIndicator();
                       } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                      } else if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
-                      return Text('No data');
+                        // Gérer les erreurs
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        // Gérer le cas où aucune conversation n'est retournée
+                        return Text('No conversations available');
                       } else {
-                      final data = snapshot.data as List<dynamic>;
-                     return Row(
-                        children: List.generate(
-                          data.length,
-                              (index) =>
-                              Container(
-                                margin: EdgeInsets.only(right: 20),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.grey[300],
+                        // Afficher la liste des conversations
+                        final data = snapshot.data!;
+                        debugPrint(data.toString());
+                        return Row(
+                          children: List.generate(
+                            data.length,
+                                (index) => Container(
+                              margin: EdgeInsets.only(right: 20),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.grey[300],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: FadeInImage(
+                                        placeholder: AssetImage('assets/placeholder_image.png'), // Image de remplacement pendant le chargement
+                                        image: NetworkImage(data[index]['character_info']["image"] as String), // URL de l'image de la conversation
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text(data[index]['name'] as String),
-                                  ],
-                                ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(data[index]['character_info']['name'] ?? "" as String),
+                                ],
                               ),
-                        ),
-                      );
-                    }
+                            ),
+                          ),
+                        );
+                      }
                     },
                   ),
+
                 ),
               ],
             ),
@@ -211,7 +225,7 @@ final conversations=Conversations();
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
               break;
             case 1:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
               break;
             case 2:
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ScreenHome()));
