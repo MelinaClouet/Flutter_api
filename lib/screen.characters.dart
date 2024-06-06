@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api/class/personnages.dart';
+import 'package:flutter_api/screen.conversations.dart';
 import 'package:flutter_api/screen.home.dart';
 import 'package:flutter_api/screen.universes.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
@@ -328,7 +329,7 @@ class _ScreenCharactersState extends State<ScreenCharacters> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenCharacters()));
               break;
             case 3:
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenConversations()));
               break;
 
           }

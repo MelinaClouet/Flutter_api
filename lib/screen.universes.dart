@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_api/class/univers.dart';
 import 'package:flutter_api/screen.characters.dart';
+import 'package:flutter_api/screen.conversations.dart';
 import 'package:flutter_api/screen.home.dart';
 import 'package:flutter_api/screen.universes.description.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
@@ -193,7 +194,7 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenCharacters()));
               break;
             case 3:
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenConversations()));
               break;
 
           }
