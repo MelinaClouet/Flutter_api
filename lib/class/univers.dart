@@ -11,7 +11,7 @@ class Univers{
 
       if (response.statusCode == 200) {
         //debugPrint(response.body);
-        return jsonDecode(response.body);
+        return jsonDecode(response.body) as List<dynamic>;
       } else {
         throw Exception('Failed to load data');
       }

@@ -102,7 +102,7 @@ class _ScreenUniversesDescriptionState extends State<ScreenUniversesDescription>
                                 }
                               },
 
-                              child: const Text('Update'),
+                              child: const Text('Mettre à jour'),
                             ),
                           ],
                         ),

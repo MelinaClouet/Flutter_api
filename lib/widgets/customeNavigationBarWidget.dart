@@ -12,6 +12,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      fixedColor: Color(0xFF9F5540),
       currentIndex: currentIndex,
       onTap: onTap,
       items: [
@@ -24,7 +25,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
           label: 'Univers',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.message, color: currentIndex == 2 ? Color(0xFF9F5540) :Colors.black),
+          icon: Icon(Icons.person, color: currentIndex == 2 ? Color(0xFF9F5540) : Colors.black),
+          label: 'Profile',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.message, color: currentIndex == 3 ? Color(0xFF9F5540) :Colors.black),
           label: 'Messages',
         ),
 

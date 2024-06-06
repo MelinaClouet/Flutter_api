@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_api/class/univers.dart';
+import 'package:flutter_api/screen.characters.dart';
 import 'package:flutter_api/screen.home.dart';
 import 'package:flutter_api/screen.universes.description.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
@@ -182,15 +183,18 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
 
         // Gestion de la navigation
           switch (index) {
-          case 0:
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
-          break;
-          case 1:
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
-          break;
-          case 2:
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
-          break;
+            case 0:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              break;
+            case 1:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
+              break;
+            case 2:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenCharacters()));
+              break;
+            case 3:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
+              break;
 
           }
 

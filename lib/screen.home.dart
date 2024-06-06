@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_api/screen.characters.dart';
 import 'package:flutter_api/screen.universes.dart';
+import 'package:flutter_api/screen.universes.description.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -186,14 +188,23 @@ final conversations=Conversations();
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
-                                      child: ClipRRect( // Clip the child to respect the border radius
+                                      child: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
-                                        child: FadeInImage(
-                                          placeholder: NetworkImage(
-                                            "https://via.placeholder.com/150",
-                                          ),
-                                          image: NetworkImage(
-                                            picture.fetchPictures(_token, data[index]['image'] as String) as String,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => ScreenUniversesDescription(universeId: data[index]["id"].toString(),)),
+                                            );
+                                            print(data[index]["id"]); // For testing purposes
+                                          },
+                                          child: FadeInImage(
+                                            placeholder: NetworkImage(
+                                              "https://via.placeholder.com/150",
+                                            ),
+                                            image: NetworkImage(
+                                              picture.fetchPictures(_token, data[index]['image'] as String) as String,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -228,6 +239,9 @@ final conversations=Conversations();
               Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUniverses()));
               break;
             case 2:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenCharacters()));
+              break;
+            case 3:
               Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenHome()));
               break;
 
