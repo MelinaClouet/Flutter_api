@@ -8,7 +8,7 @@ class Personnages{
     var url = Uri.parse('https://mds.sprw.dev/characters/$id');
     return http.get(url, headers: {'Authorization': 'Bearer $token'}).then((response) {
 
-      debugPrint(response.body);
+      //debugPrint(response.body);
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {

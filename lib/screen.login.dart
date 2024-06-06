@@ -60,6 +60,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: TextField(
+
                         obscureText: true,
                         controller: passwordController,
                         decoration: InputDecoration(
