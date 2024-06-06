@@ -17,6 +17,27 @@ class Personnages{
     });
   }
 
+  Future<dynamic> getACharacters(String token, id, idCharacter) async {
+    var url = Uri.parse('https://mds.sprw.dev/universes/$id/characters/$idCharacter');
+
+    var response = await http.get(url, headers: {'Authorization': 'Bearer $token'});
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<dynamic> updateDescription(String token, id, idCharacter) async {
+    var url = Uri.parse('https://mds.sprw.dev/universes/$id/characters/$idCharacter');
+    var response = await http.put(url, headers: {'Authorization': 'Bearer $token'});
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   Future<dynamic> getCharactersOfUnivers(String token, String id) async {
     var url = Uri.parse('https://mds.sprw.dev/universes/$id/characters');
     debugPrint('ici');
