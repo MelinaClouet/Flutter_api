@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api/screen.characters.dart';
 import 'package:flutter_api/screen.home.dart';
+import 'package:flutter_api/screen.messages.dart';
 import 'package:flutter_api/screen.universes.dart';
 import 'package:flutter_api/screen.universes.description.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
@@ -110,6 +111,7 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                           margin: EdgeInsets.all(10),
                           child: GestureDetector(
                             onTap: () {
+                              debugPrint(data[index]['id'].toString());
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
