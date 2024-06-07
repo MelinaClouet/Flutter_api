@@ -27,11 +27,8 @@ class User{
       "firstname" : firstname.toString(),
       "lastname" : lastname.toString(),
     };
-    debugPrint('users!!');
     var url=Uri.parse('https://mds.sprw.dev/users/$id');
     var response = await http.put(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body));
-    debugPrint(response.body);
-    debugPrint(response.statusCode.toString());
     if(response.statusCode==200){
       return response.statusCode.toString();
     }else{

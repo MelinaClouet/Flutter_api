@@ -59,8 +59,7 @@ class _ScreenUserState extends State<ScreenUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'MON PROFIL',
+        title: Text((_id==widget.userId) ? 'Mon profil' : 'Profil utilisateur',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 30,
