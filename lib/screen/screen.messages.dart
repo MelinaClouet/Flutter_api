@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/messages.dart';
-import 'class/user.dart';
+import '../class/messages.dart';
+import '../class/user.dart';
 
 class ScreenMessages extends StatefulWidget {
   const ScreenMessages({super.key, required this.conversationId});

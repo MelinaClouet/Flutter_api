@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_api/screen.characters.dart';
-import 'package:flutter_api/screen.home.dart';
-import 'package:flutter_api/screen.messages.dart';
-import 'package:flutter_api/screen.universes.dart';
-import 'package:flutter_api/screen.universes.description.dart';
+import 'package:flutter_api/screen/screen.characters.dart';
+import 'package:flutter_api/screen/screen.home.dart';
+import 'package:flutter_api/screen/screen.messages.dart';
+import 'package:flutter_api/screen/screen.universes.dart';
+import 'package:flutter_api/screen/screen.universes.description.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/conversations.dart';
-import 'class/personnages.dart';
-import 'class/pictures.dart';
-import 'class/univers.dart';
+import '../class/conversations.dart';
+import '../class/personnages.dart';
+import '../class/pictures.dart';
+import '../class/univers.dart';
 
 class ScreenConversations extends StatefulWidget {
   const ScreenConversations({super.key});

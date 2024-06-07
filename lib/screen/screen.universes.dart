@@ -1,15 +1,16 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api/class/univers.dart';
-import 'package:flutter_api/screen.characters.dart';
-import 'package:flutter_api/screen.conversations.dart';
-import 'package:flutter_api/screen.home.dart';
-import 'package:flutter_api/screen.universes.description.dart';
+import 'package:flutter_api/screen/screen.characters.dart';
+import 'package:flutter_api/screen/screen.conversations.dart';
+import 'package:flutter_api/screen/screen.home.dart';
+import 'package:flutter_api/screen/screen.universes.description.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/pictures.dart';
+import '../class/pictures.dart';
 
 class ScreenUniverses extends StatefulWidget {
   const ScreenUniverses({Key? key});
@@ -154,22 +155,39 @@ class _ScreenUniversesState extends State<ScreenUniverses> {
                               placeholder: NetworkImage(
                                 "https://via.placeholder.com/150",
                               ),
-                              image: NetworkImage(
-                                picture.fetchPictures(_token, data[index]['image'] as String) as String,
-                              ),
+                              image:Image.network(
+                                picture.fetchPictures(_token, data[index]['image'] as String),
+
+                              ).image,
+                              imageErrorBuilder: (context, error, stackTrace) {
+                                return Image.network(
+                                  "https://via.placeholder.com/150",
+                                  fit: BoxFit.cover, // ou tout autre ajustement approprié
+                                );
+                              },
+
+
+
                             ),
                           ),
                         ),
 
                       ),
                       SizedBox(height: 10),
-                      Text(
-                        data[index]['name'] as String,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          data[index]['name'] as String,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis, // Ajoute "..." si le texte dépasse la largeur du conteneur
+                          maxLines: 1, // Limite le texte à une seule ligne
                         ),
                       ),
+
                     ],
                   ),
                 );

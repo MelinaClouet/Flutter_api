@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/pictures.dart';
-import 'class/univers.dart';
+import '../class/pictures.dart';
+import '../class/univers.dart';
 class ScreenUniversesDescription extends StatefulWidget {
   final String universeId; // Parameter to hold the universe ID
 
@@ -156,6 +156,12 @@ class _ScreenUniversesDescriptionState extends State<ScreenUniversesDescription>
                           image: NetworkImage(
                             picture.fetchPictures(_token, data['image'] as String),
                           ),
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            return Image.network(
+                              "https://via.placeholder.com/500x150",
+                              fit: BoxFit.cover, // ou tout autre ajustement approprié
+                            );
+                          },
                           fit: BoxFit.fitWidth,
                         ),
                       ),

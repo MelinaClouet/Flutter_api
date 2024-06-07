@@ -2,19 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_api/screen.characters.dart';
-import 'package:flutter_api/screen.conversations.dart';
-import 'package:flutter_api/screen.universes.dart';
-import 'package:flutter_api/screen.universes.description.dart';
-import 'package:flutter_api/screen.user.dart';
-import 'package:flutter_api/screen.users.dart';
+import 'package:flutter_api/screen/screen.characters.dart';
+import 'package:flutter_api/screen/screen.conversations.dart';
+import 'package:flutter_api/screen/screen.universes.dart';
+import 'package:flutter_api/screen/screen.universes.description.dart';
+import 'package:flutter_api/screen/screen.user.dart';
+import 'package:flutter_api/screen/screen.users.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/pictures.dart';
-import 'class/univers.dart';
-import 'class/conversations.dart';
-import 'class/user.dart';
+import '../class/pictures.dart';
+import '../class/univers.dart';
+import '../class/conversations.dart';
+import '../class/user.dart';
 
 
 
@@ -158,7 +158,7 @@ final conversations=Conversations();
                         debugPrint(data.toString());
                         return Row(
                           children: List.generate(
-                            data.length,
+                            10,
                                 (index) => Container(
                               margin: EdgeInsets.only(right: 20),
                               child: Column(
@@ -174,7 +174,16 @@ final conversations=Conversations();
                                       borderRadius: BorderRadius.circular(15),
                                       child: FadeInImage(
                                         placeholder: AssetImage('assets/placeholder_image.png'), // Image de remplacement pendant le chargement
-                                        image: NetworkImage(picture.fetchPictures(_token, data[index]['character_info']["image"] as String)), // URL de l'image de la conversation
+                                        image:Image.network(
+                                          picture.fetchPictures(_token, data[index]['image'] as String),
+
+                                        ).image,
+                                        imageErrorBuilder: (context, error, stackTrace) {
+                                          return Image.network(
+                                            "https://via.placeholder.com/150",
+                                            fit: BoxFit.cover, // ou tout autre ajustement approprié
+                                          );
+                                        },// URL de l'image de la conversation
                                         fit: BoxFit.cover,
                                       ),
                                     ),

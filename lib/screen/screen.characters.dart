@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api/class/personnages.dart';
-import 'package:flutter_api/screen.conversations.dart';
-import 'package:flutter_api/screen.home.dart';
-import 'package:flutter_api/screen.universes.dart';
+import 'package:flutter_api/screen/screen.conversations.dart';
+import 'package:flutter_api/screen/screen.home.dart';
+import 'package:flutter_api/screen/screen.universes.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/pictures.dart';
-import 'class/univers.dart';
+import '../class/pictures.dart';
+import '../class/univers.dart';
 
 class ScreenCharacters extends StatefulWidget {
   const ScreenCharacters({super.key});
@@ -251,6 +251,12 @@ class _ScreenCharactersState extends State<ScreenCharacters> {
                                                           image: NetworkImage(
                                                             picture.fetchPictures(_token, data['image'] as String),
                                                           ),
+                                                          imageErrorBuilder: (context, error, stackTrace) {
+                                                            return Image.network(
+                                                              "https://via.placeholder.com/150",
+                                                              fit: BoxFit.cover, // ou tout autre ajustement approprié
+                                                            );
+                                                          },
                                                           fit: BoxFit.fitWidth,
                                                         ),
                                                       ),

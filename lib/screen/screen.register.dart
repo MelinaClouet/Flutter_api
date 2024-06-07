@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_api/screen.home.dart';
-import 'package:flutter_api/screen.login.dart';
+import 'package:flutter_api/screen/screen.home.dart';
+import 'package:flutter_api/screen/screen.login.dart';
 
 import 'package:http/http.dart' as http;
 

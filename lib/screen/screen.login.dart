@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_api/screen.register.dart';
-import 'package:flutter_api/screen.home.dart';
+import 'package:flutter_api/screen/screen.register.dart';
+import 'package:flutter_api/screen/screen.home.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

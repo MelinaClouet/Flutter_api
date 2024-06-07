@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'class/user.dart';
+import '../class/user.dart';
 
 class ScreenUser extends StatefulWidget {
   const ScreenUser({super.key, required this.userId});
