@@ -18,4 +18,26 @@ class User{
       return null; // Retournez null en cas d'échec de la requête
     }
   }
+
+  Future<String?> updateUser(token ,id,String pseudo, String email, String firstname, String lastname) async {
+    debugPrint(token);
+    var body = {
+      "username" : pseudo.toString(),
+      "email" : email.toString(),
+      "firstname" : firstname.toString(),
+      "lastname" : lastname.toString(),
+    };
+    debugPrint(jsonEncode(body));
+    debugPrint(body.toString());
+    var url=Uri.parse('https://mds.sprw.dev/users/$id');
+    debugPrint(url.toString());
+    var response = await http.put(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body));
+    debugPrint(response.statusCode.toString());
+    debugPrint(response.body);
+    if(response.statusCode==200){
+      return response.statusCode.toString();
+    }else{
+      return null;
+    }
+  }
 }

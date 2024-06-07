@@ -1,16 +1,19 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api/screen.characters.dart';
 import 'package:flutter_api/screen.conversations.dart';
 import 'package:flutter_api/screen.universes.dart';
 import 'package:flutter_api/screen.universes.description.dart';
+import 'package:flutter_api/screen.user.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'class/pictures.dart';
 import 'class/univers.dart';
 import 'class/conversations.dart';
+import 'class/user.dart';
 
 
 
@@ -73,9 +76,46 @@ final conversations=Conversations();
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.purple,
+              GestureDetector(
+                onTap: () {
+                  showMenu(
+                    context: context,
+                    position: RelativeRect.fromLTRB(100, 100, 0, 0), // Définir la position du menu par rapport à l'élément de déclenchement
+                    items: [
+                      PopupMenuItem(
+                        child: GestureDetector(onTap:(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUser()));
+                        },
+                            child: Text('Mon profil')),
+                        value: 'Mon profil',
+                      ),
+                      PopupMenuItem(
+                        child: GestureDetector(onTap:(){
+                  },
+                        child: Text('Tous les utilisateurs')),
+                        value: 'Tous les utilisateurs',
+                      ),
+
+                    ],
+                    elevation: 8.0, // Définir l'élévation du menu
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Color(0xFF80586D),
+                  child: FutureBuilder(
+                    future: getFirstNameUser(),
+                    builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return Text(snapshot.data.toString() , style: TextStyle(fontSize: 20, color: Colors.white),);
+                      }
+                    },
+                  ),
+                ),
               ),
             ],
           ),
@@ -132,7 +172,7 @@ final conversations=Conversations();
                                       borderRadius: BorderRadius.circular(15),
                                       child: FadeInImage(
                                         placeholder: AssetImage('assets/placeholder_image.png'), // Image de remplacement pendant le chargement
-                                        image: NetworkImage(data[index]['character_info']["image"] as String), // URL de l'image de la conversation
+                                        image: NetworkImage(picture.fetchPictures(_token, data[index]['character_info']["image"] as String)), // URL de l'image de la conversation
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -253,8 +293,12 @@ final conversations=Conversations();
     );
   }
 
+  getFirstNameUser() async {
+    final user=User();
+    var userFirstName=await user.getUser(_token!, _id!);
+    //take juste the first letter of the first name
+    return userFirstName['firstname'].toString().substring(0,1);
+  }
 
 
-
-  //img_data/.jpg
 }
