@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'class/user.dart';
 
 class ScreenUser extends StatefulWidget {
-  const ScreenUser({super.key});
-
+  const ScreenUser({super.key, required this.userId});
+final String userId;
   @override
   State<ScreenUser> createState() => _ScreenUserState();
 }
@@ -70,7 +70,7 @@ class _ScreenUserState extends State<ScreenUser> {
         ),
       ),
       body: FutureBuilder(
-        future: user.getUser(_token!, _id!),
+        future: user.getUser(_token!, widget.userId),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             _usernameController.text = snapshot.data['username'];
@@ -116,7 +116,7 @@ class _ScreenUserState extends State<ScreenUser> {
                     onPressed: () async {
                       var userResponse = await user.updateUser(
                         _token!,
-                        _id!,
+                        widget.userId,
                         _usernameController.text,
                         _emailController.text,
                         _firstNameController.text,

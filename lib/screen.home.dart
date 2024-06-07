@@ -7,6 +7,7 @@ import 'package:flutter_api/screen.conversations.dart';
 import 'package:flutter_api/screen.universes.dart';
 import 'package:flutter_api/screen.universes.description.dart';
 import 'package:flutter_api/screen.user.dart';
+import 'package:flutter_api/screen.users.dart';
 import 'package:flutter_api/widgets/customeNavigationBarWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -84,14 +85,15 @@ final conversations=Conversations();
                     items: [
                       PopupMenuItem(
                         child: GestureDetector(onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUser()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUser(userId: _id!)));
                         },
                             child: Text('Mon profil')),
                         value: 'Mon profil',
                       ),
                       PopupMenuItem(
                         child: GestureDetector(onTap:(){
-                  },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenUsers()));
+                        },
                         child: Text('Tous les utilisateurs')),
                         value: 'Tous les utilisateurs',
                       ),

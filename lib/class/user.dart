@@ -27,17 +27,30 @@ class User{
       "firstname" : firstname.toString(),
       "lastname" : lastname.toString(),
     };
-    debugPrint(jsonEncode(body));
-    debugPrint(body.toString());
+    debugPrint('users!!');
     var url=Uri.parse('https://mds.sprw.dev/users/$id');
-    debugPrint(url.toString());
     var response = await http.put(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body));
-    debugPrint(response.statusCode.toString());
     debugPrint(response.body);
+    debugPrint(response.statusCode.toString());
     if(response.statusCode==200){
       return response.statusCode.toString();
     }else{
       return null;
     }
   }
+
+  fetchUsers(String token) async {
+    debugPrint('users');
+    var url = Uri.parse('https://mds.sprw.dev/users');
+    var response = await http.get(url, headers: {'Authorization': 'Bearer $token'});
+
+    debugPrint(response.body);
+    debugPrint(response.statusCode.toString());
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      return null;
+    }
+  }
+
 }

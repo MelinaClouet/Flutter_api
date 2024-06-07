@@ -17,15 +17,15 @@ class ScreenMessages extends StatefulWidget {
 class _ScreenMessagesState extends State<ScreenMessages> {
   String? _token; // Declare a variable to hold the token
   String? _id;
-  final message=Messages();
+  final message = Messages();
   TextEditingController messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController(); // Declare ScrollController
 
   @override
   void initState() {
     super.initState();
     _getToken();
     _getId();
-
   }
 
   Future<void> _getToken() async {
@@ -37,9 +37,20 @@ class _ScreenMessagesState extends State<ScreenMessages> {
 
   Future<void> _getId() async {
     final prefs = await SharedPreferences.getInstance();
-
     setState(() {
       _id = prefs.getString('id').toString();
+    });
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
     });
   }
 
@@ -47,7 +58,8 @@ class _ScreenMessagesState extends State<ScreenMessages> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages',
+        title: Text(
+          'Messages',
           textAlign: TextAlign.center, // Pour centrer le texte
           style: TextStyle(
             fontSize: 30,
@@ -73,12 +85,13 @@ class _ScreenMessagesState extends State<ScreenMessages> {
                     );
                   } else {
                     final data = snapshot.data as List<dynamic>;
+                    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom()); // Scroll to bottom after messages load
                     return ListView.builder(
+                      controller: _scrollController, // Attach ScrollController
                       itemCount: data.length,
                       itemBuilder: (context, index) {
                         return Column(
-                          children:[
-
+                          children: [
                             FutureBuilder(
                               future: getFirstNameUser(),
                               builder: (context, AsyncSnapshot<dynamic> snapshot) {
@@ -87,31 +100,49 @@ class _ScreenMessagesState extends State<ScreenMessages> {
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else {
-                                  // Afficher la valeur retournée par la fonction
-                                  return Text(data[index]['is_sent_by_human'] ? snapshot.data.toString() : "ChatGpt" , textAlign: data[index]['is_sent_by_human'] ? TextAlign.start : TextAlign.end,);
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    child: Text(
+                                      data[index]['is_sent_by_human']
+                                          ? snapshot.data.toString()
+                                          : "ChatGpt",
+                                      textAlign: data[index]['is_sent_by_human']
+                                          ? TextAlign.end
+                                          : TextAlign.start,
+                                    ),
+                                  );
                                 }
                               },
                             ),
-
                             Container(
-                              width: MediaQuery.of(context).size.width*0.8 ,
-                                padding: EdgeInsets.all(10),
-                                margin: EdgeInsets.only(top: 10,bottom: 10, left:data[index]['is_sent_by_human']? 50 : 0, right:data[index]['is_sent_by_human']? 0 : 50 ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: data[index]['is_sent_by_human'] ? Color(0xFF80586D) : Color(0xFFC49D83),
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.only(
+                                top: 10,
+                                bottom: 10,
+                                left: data[index]['is_sent_by_human'] ? 50 : 0,
+                                right: data[index]['is_sent_by_human'] ? 0 : 50,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: data[index]['is_sent_by_human']
+                                    ? Color(0xFF80586D)
+                                    : Color(0xFFC49D83),
+                              ),
+                              child: Text(
+                                data[index]['content'],
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: data[index]['is_sent_by_human']
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
-                                child:
-                                Text(data[index]['content'],
-                                  style: TextStyle(fontSize: 20, color: data[index]['is_sent_by_human'] ? Colors.white : Colors.black),
-                                  textAlign: data[index]['is_sent_by_human'] ? TextAlign.right : TextAlign.left,
-                                )
+                                textAlign: data[index]['is_sent_by_human']
+                                    ? TextAlign.right
+                                    : TextAlign.left,
+                              ),
                             ),
-                            Text(data[index]['created_at'],
-                              style: TextStyle(fontSize: 15, color: Colors.grey),
-                            ),
-
-                          ]
+                          ],
                         );
                       },
                     );
@@ -135,13 +166,12 @@ class _ScreenMessagesState extends State<ScreenMessages> {
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () {
-                    var response=message.addMessage(_token, widget.conversationId, messageController.text);
-                    if(response){
-                      messageController.clear();
-                      setState(() {
+                    message.addMessage(_token, widget.conversationId, messageController.text);
+                    messageController.clear();
+                    setState(() {
                         message.fetchMessages(_token, widget.conversationId);
-                      });
-                    }
+                        _scrollToBottom(); // Scroll to bottom after sending a message
+                    });
                   },
                 ),
               ],
@@ -150,14 +180,12 @@ class _ScreenMessagesState extends State<ScreenMessages> {
           SizedBox(height: 20),
         ],
       ),
-
     );
   }
 
-  getFirstNameUser() async {
-    final user=User();
-   var userId=await user.getUser(_token!, _id!);
-   return userId['firstname'];
-
+  Future<String> getFirstNameUser() async {
+    final user = User();
+    var userId = await user.getUser(_token!, _id!);
+    return userId['firstname'];
   }
 }
