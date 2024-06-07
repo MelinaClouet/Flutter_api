@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_api/screen.login.dart';
+import 'package:flutter_api/trash.dart';
 
 void main() {
   // Bloquer la rotation de l'écran avant de démarrer l'application

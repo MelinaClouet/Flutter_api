@@ -54,5 +54,17 @@ class Messages{
       }
     });
   }
+  regenerateLastMessage(token, conversationId){
+    var url = Uri.parse('https://mds.sprw.dev/conversations/$conversationId');
+    http.put(url, headers: {'Authorization': 'Bearer $token'}).then((response) {
+      debugPrint(response.body);
+      debugPrint(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
 
 }

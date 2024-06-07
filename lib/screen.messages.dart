@@ -15,31 +15,33 @@ class ScreenMessages extends StatefulWidget {
 }
 
 class _ScreenMessagesState extends State<ScreenMessages> {
-  String? _token; // Declare a variable to hold the token
+  String? _token;
   String? _id;
   final message = Messages();
   TextEditingController messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController(); // Declare ScrollController
+  final ScrollController _scrollController = ScrollController();
+  Future<List<dynamic>>? _messagesFuture;
 
   @override
   void initState() {
     super.initState();
-    _getToken();
-    _getId();
+    _initialize();
   }
 
-  Future<void> _getToken() async {
+  Future<void> _initialize() async {
     final prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('token');
+    _id = prefs.getString('id');
     setState(() {
-      _token = prefs.getString('token');
+      _messagesFuture = _fetchMessages();
     });
   }
 
-  Future<void> _getId() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _id = prefs.getString('id').toString();
-    });
+  Future<List<dynamic>> _fetchMessages() async {
+    var response = await message.fetchMessages(_token, widget.conversationId);
+    debugPrint('response');
+    debugPrint(response.toString());
+    return response;
   }
 
   void _scrollToBottom() {
@@ -60,7 +62,7 @@ class _ScreenMessagesState extends State<ScreenMessages> {
       appBar: AppBar(
         title: Text(
           'Messages',
-          textAlign: TextAlign.center, // Pour centrer le texte
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 30,
             color: Color(0xFF9F5540),
@@ -68,118 +70,138 @@ class _ScreenMessagesState extends State<ScreenMessages> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder(
-              future: message.fetchMessages(_token, widget.conversationId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Erreur de chargement des messages'),
-                    );
-                  } else {
-                    final data = snapshot.data as List<dynamic>;
-                    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom()); // Scroll to bottom after messages load
-                    return ListView.builder(
-                      controller: _scrollController, // Attach ScrollController
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            FutureBuilder(
-                              future: getFirstNameUser(),
-                              builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  return Container(
-                                    width: MediaQuery.of(context).size.width * 0.9,
-                                    child: Text(
-                                      data[index]['is_sent_by_human']
-                                          ? snapshot.data.toString()
-                                          : "ChatGpt",
-                                      textAlign: data[index]['is_sent_by_human']
-                                          ? TextAlign.end
-                                          : TextAlign.start,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              padding: EdgeInsets.all(10),
-                              margin: EdgeInsets.only(
-                                top: 10,
-                                bottom: 10,
-                                left: data[index]['is_sent_by_human'] ? 50 : 0,
-                                right: data[index]['is_sent_by_human'] ? 0 : 50,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: data[index]['is_sent_by_human']
-                                    ? Color(0xFF80586D)
-                                    : Color(0xFFC49D83),
-                              ),
-                              child: Text(
-                                data[index]['content'],
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: data[index]['is_sent_by_human']
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
-                                textAlign: data[index]['is_sent_by_human']
-                                    ? TextAlign.right
-                                    : TextAlign.left,
-                              ),
-                            ),
-                          ],
+      body: FutureBuilder(
+        future: _messagesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Erreur de chargement des données'));
+          } else {
+            return _buildMessageList(snapshot.data as List<dynamic>);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildMessageList(List<dynamic> data) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  FutureBuilder(
+                    future: getFirstNameUser(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Text(
+                            data[index]['is_sent_by_human']
+                                ? snapshot.data.toString()
+                                : "ChatGpt",
+                            textAlign: data[index]['is_sent_by_human']
+                                ? TextAlign.end
+                                : TextAlign.start,
+                          ),
                         );
-                      },
-                    );
-                  }
-                }
-              },
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Entrez votre message',
+                      }
+                    },
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                      left: data[index]['is_sent_by_human'] ? 50 : 0,
+                      right: data[index]['is_sent_by_human'] ? 0 : 50,
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: data[index]['is_sent_by_human']
+                          ? Color(0xFF80586D)
+                          : Color(0xFFC49D83),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          data[index]['content'],
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: data[index]['is_sent_by_human']
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                          textAlign: data[index]['is_sent_by_human']
+                              ? TextAlign.right
+                              : TextAlign.left,
+                        ),
+                        if(index==data.length-1)
+
+                          Container(
+                            width: double.infinity,
+                            child: IconButton(onPressed: (){
+                              message.regenerateLastMessage(_token, widget.conversationId);
+                              setState(() {
+                                _messagesFuture = _fetchMessages();
+                              });
+
+                            },
+                            icon: Icon(Icons.refresh),
+                              color: Color(0xFF80586D),
+                              alignment: Alignment.centerRight,
+
+                            ),
+                          )
+                      ],
+                    ),
+
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: messageController,
+                  decoration: InputDecoration(
+                    hintText: 'Entrez votre message',
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    message.addMessage(_token, widget.conversationId, messageController.text);
-                    messageController.clear();
-                    setState(() {
-                        message.fetchMessages(_token, widget.conversationId);
-                        _scrollToBottom(); // Scroll to bottom after sending a message
-                    });
-                  },
-                ),
-              ],
-            ),
+              ),
+              IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () async {
+                  var response=await message.addMessage(_token, widget.conversationId, messageController.text);
+                  messageController.clear();
+                  setState(() {
+                    _messagesFuture = _fetchMessages();
+
+                  });
+                  _scrollToBottom(); // Scroll to bottom after sending a message
+                },
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-        ],
-      ),
+        ),
+        SizedBox(height: 20),
+      ],
     );
   }
 

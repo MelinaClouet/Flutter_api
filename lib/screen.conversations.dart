@@ -80,9 +80,6 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                 return Center(child: Text('No conversations available')); // Gérer le cas où aucune conversation n'est disponible
               } else {
                 final data = snapshot.data!;
-                debugPrint('conversations');
-
-                debugPrint(data.toString());
                 return SingleChildScrollView( // Utiliser SingleChildScrollView pour permettre le défilement horizontal
                   scrollDirection: Axis.horizontal,
                   child: Column(
