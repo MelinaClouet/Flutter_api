@@ -24,21 +24,22 @@ class Messages{
     }
   }
 
-  addMessage(token, conversationId, message) {
+  Future<String?> addMessage(token, conversationId, message) async {
     var url = Uri.parse('https://mds.sprw.dev/conversations/$conversationId/messages');
     var body = {
       "content": message,
     };
-    http.post(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body)).then((response) {
-      debugPrint(response.body);
-      debugPrint(response.statusCode.toString());
+    var response = await http.post(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body));
 
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+
+    debugPrint(response.body);
+    debugPrint(response.statusCode.toString());
+
+    if (response.statusCode == 201) {
+      return response.body;
+    } else {
+      return null;
+    }
   }
 
   deleteMessage(token, conversationId, id) {
