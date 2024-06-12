@@ -57,7 +57,6 @@ class Univers{
     var response = await http.put(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body));
 
     if (response.statusCode == 200) {
-      debugPrint(response.statusCode.toString());
       return response.statusCode.toString();
     } else {
       throw Exception('Failed to load data');

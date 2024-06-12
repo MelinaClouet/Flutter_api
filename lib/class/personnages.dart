@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:http/http.dart' as http;
 class Personnages{
+
   fetchCharacter(token, id){
     var url = Uri.parse('https://mds.sprw.dev/characters/$id');
     return http.get(url, headers: {'Authorization': 'Bearer $token'}).then((response) {
@@ -40,9 +41,9 @@ class Personnages{
 
   Future<dynamic> getCharactersOfUnivers(String token, String id) async {
     var url = Uri.parse('https://mds.sprw.dev/universes/$id/characters');
-    debugPrint('ici');
+
     var response = await http.get(url, headers: {'Authorization': 'Bearer $token'});
-    debugPrint(response.body);
+
    if (response.statusCode == 200) {
       //debugPrint(response.body);
       return jsonDecode(response.body);

@@ -158,7 +158,7 @@ final conversations=Conversations();
                         debugPrint(data.toString());
                         return Row(
                           children: List.generate(
-                            10,
+                            data.length > 10 ? 10 : data.length,
                                 (index) => Container(
                               margin: EdgeInsets.only(right: 20),
                               child: Column(
@@ -173,11 +173,9 @@ final conversations=Conversations();
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: FadeInImage(
-                                        placeholder: AssetImage('assets/placeholder_image.png'), // Image de remplacement pendant le chargement
-                                        image:Image.network(
-                                          picture.fetchPictures(_token, data[index]['image'] as String),
-
-                                        ).image,
+                                        image: NetworkImage(
+                                          picture.fetchPictures(_token, data[index]['character_info']['image'] as String),
+                                        ),
                                         imageErrorBuilder: (context, error, stackTrace) {
                                           return Image.network(
                                             "https://via.placeholder.com/150",
@@ -185,6 +183,9 @@ final conversations=Conversations();
                                           );
                                         },// URL de l'image de la conversation
                                         fit: BoxFit.cover,
+                                        placeholder: NetworkImage(
+                                          "https://via.placeholder.com/150",
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -198,6 +199,7 @@ final conversations=Conversations();
                       }
                     },
                   ),
+
 
                 ),
               ],

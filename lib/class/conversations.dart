@@ -19,7 +19,6 @@ class Conversations {
           conversations.add(conversation);
 
         }
-
         return conversations;
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
@@ -36,9 +35,7 @@ class Conversations {
       "user_id": user_id,
     };
     http.post(url, headers: {'Authorization': 'Bearer $token'}, body: jsonEncode(body)).then((response) {
-      debugPrint(response.body);
-      debugPrint(response.statusCode.toString());
-      debugPrint(response.statusCode.toString());
+
 
       if (response.statusCode == 201) {
         return true;
@@ -51,8 +48,6 @@ class Conversations {
     var url = Uri.parse('https://mds.sprw.dev/conversations/$id');
     http.delete(url, headers: {'Authorization': 'Bearer $token'}).then((response) {
 
-      debugPrint("response.body");
-      debugPrint(response.statusCode.toString());
       if (response.statusCode == 200) {
         return true;
       } else {

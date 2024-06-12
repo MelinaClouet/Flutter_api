@@ -91,7 +91,6 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                             direction: DismissDirection.endToStart, // Direction de glissement
                             onDismissed: (direction) {
                               var response=conversations.deleteConversation(_token, data[index]['id'].toString());
-                              debugPrint(response.toString());
                               if(response==true){
                                 setState(() {
                                   conversations.fetchConversations(_token);
@@ -108,12 +107,13 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                           margin: EdgeInsets.all(10),
                           child: GestureDetector(
                             onTap: () {
-                              debugPrint(data[index]['id'].toString());
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ScreenMessages(
                                     conversationId: data[index]['id'].toString(),
+                                    namePerso: data[index]['character_info']['name'] as String,
                                   ),
                                 ),
                               );
@@ -128,7 +128,9 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
                                     child: FadeInImage(
-                                      placeholder: AssetImage('assets/placeholder_image.png'),
+                                      placeholder: NetworkImage(
+                                        "https://via.placeholder.com/150",
+                                      ),
                                       image: NetworkImage(
                                         picture.fetchPictures(_token, data[index]['character_info']['image'] as String),
                                       ),
@@ -183,7 +185,7 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                           return Center(child: Text('No universes available'));
                         } else {
                           final universes = snapshot.data!;
-                          debugPrint(universes.toString());
+
                           return Expanded(
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
@@ -212,7 +214,7 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                                                      setState(() {
                                                         _selectedCharacter = character['id'].toString();
                                                         isSelected = !isSelected;
-                                                        debugPrint(_selectedCharacter.toString());
+
                                                       });
                                                     },
                                                     child: Column(
@@ -223,7 +225,9 @@ class _ScreenConversationsState extends State<ScreenConversations> {
                                                           child: ClipRRect(
                                                             borderRadius: BorderRadius.circular(15),
                                                             child: FadeInImage(
-                                                              placeholder: AssetImage('assets/placeholder_image.png'),
+                                                              placeholder: NetworkImage(
+                                                                "https://via.placeholder.com/150",
+                                                              ),
                                                               image: NetworkImage(
                                                                 picture.fetchPictures(_token, character['image'] as String),
                                                               ),
