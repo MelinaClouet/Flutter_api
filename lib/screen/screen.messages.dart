@@ -9,6 +9,8 @@ import '../class/user.dart';
 import '../class/personnages.dart';
 import '../widgets/CustomPainter.dart';
 
+import 'package:flutter_api/globalData.dart' as globalData;
+
 class ScreenMessages extends StatefulWidget {
   const ScreenMessages({super.key, required this.conversationId, required this.namePerso});
 
@@ -119,41 +121,17 @@ class _ScreenMessagesState extends State<ScreenMessages> {
                   );
                 }
                 return Column(
-                  children: [
-                    FutureBuilder(
-                      future: getFirstNameUser(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              child: FutureBuilder<String>(
-                                future: getFirstNameUser(),
-                                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return CircularProgressIndicator();
-                                  } else {
-                                    if (snapshot.hasError)
-                                      return Text('Error: ${snapshot.error}');
-                                    else
-                                      return Text(
-                                        _messages[index]['is_sent_by_human']
-                                            ? snapshot.data as String
-                                            : widget.namePerso, // Here we display the data from the future
-                                        textAlign: _messages[index]['is_sent_by_human']
-                                            ? TextAlign.end
-                                            : TextAlign.start,
-                                      );
-                                  }
-                                },
-                              )
-                          );
-                        }
-                      },
-                    ),
+                  children: [Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Text(
+                        _messages[index]['is_sent_by_human']
+                            ? globalData.myName as String
+                            : widget.namePerso, // Here we display the data from the future
+                        textAlign: _messages[index]['is_sent_by_human']
+                            ? TextAlign.end
+                            : TextAlign.start,
+                      )
+                  ),
                     Container(
 
                           padding: EdgeInsets.all(10),
@@ -222,12 +200,20 @@ class _ScreenMessagesState extends State<ScreenMessages> {
                     decoration: InputDecoration(
                       hintText: 'Entrez votre message',
                     ),
+
+                    onTap: () {
+                      setState(() {
+                        _scrollToBottom();
+                      });
+                    },
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () async {
 
+                    // close keyboard
+                    FocusScope.of(context).unfocus();
 
                     setState(() {
                       _messages.add({

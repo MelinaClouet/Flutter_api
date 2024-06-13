@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:flutter_api/class/user.dart';
 import 'package:flutter_api/screen/screen.register.dart';
 import 'package:flutter_api/screen/screen.home.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+
+import 'package:flutter_api/globalData.dart' as globalData;
 
 
 class ScreenLogin extends StatefulWidget {
@@ -128,6 +132,12 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
 
                             await prefs.setString('id', id.toString());
+
+                            User user = User();
+                            var userId = await user.getUser(token, id.toString());
+
+
+                            globalData.myName = userId['firstname'];
 
                             //Navigate to ScreenHome and pass the token
                             Navigator.pushReplacement(
